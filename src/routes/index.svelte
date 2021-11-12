@@ -1,6 +1,12 @@
 <script context="module">
+
+
+let ftch = null;
+
 	export async function load({ fetch }) {
-	  const res = await fetch('/api');
+		ftch = fetch;
+		console.log("fetching with style "+selected);		
+	  const res = await ftch(`/api?style=${selected}`);
   
 	if (res.ok) return { props: { users: await res.json() } };
 	return {
@@ -8,6 +14,15 @@
 	  error: new Error()
 	 };
 	}
+
+	async function changeStyle() {	  
+		console.log("CHANGE STYLE "+selected)
+	   const usrs  = await load({fetch:ftch});	  
+	   users = usrs.props.users;
+	}
+
+	let selected = "open-peeps";
+
   </script>
   
   <script>
@@ -15,6 +30,19 @@
   </script>
   
   <main>
+	<select bind:value={selected} on:change={() => changeStyle()}>
+		<option value="adeventurer">Adventurer</option>
+		<option value="avataaars">avataaars</option>
+		<option value="big-ears">big-ears</option>
+		<option value="big-smile">big-smile</option> 
+		<option value="croodles">croodles</option> 
+		<option value="bottts">bottts</option> 
+		<option value="initials">initials</option> 
+		<option value="micah">micah</option> 
+		<option value="open-peeps">open-peeps</option> 
+	</select>
+	<br>
+
 	{#each users as { avatar, lastName }}
 	<!-- sveltekit:prefetch -->
 	<a sveltekit:prefetch href={`/${lastName}`} class="box">
